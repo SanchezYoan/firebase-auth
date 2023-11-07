@@ -2,8 +2,8 @@ import React, { useContext, useRef, useState } from "react";
 import { UserContext } from "../context/userContext";
 import { useNavigate } from "react-router";
 
-export default function SignUpModal() {
-  const { modalState, toggleModals, signUp } = useContext(UserContext);
+export default function SignInModal() {
+  const { modalState, toggleModals, signIn } = useContext(UserContext);
 
   const [validation, setValidation] = useState("");
 
@@ -21,34 +21,16 @@ export default function SignUpModal() {
 
   const handleForm = async (e) => {
     e.preventDefault();
-    if (
-      (inputs.current[1].value.length || inputs.current[2].value.length) < 6
-    ) {
-      setValidation("6 characters min");
-      return;
-    } else if (inputs.current[1].value !== inputs.current[2].value) {
-      setValidation("Password do not match");
-      return;
-    }
 
     try {
-      await signUp(inputs.current[0].value, inputs.current[1].value);
-
-      formRef.current.reset();
-
+      await signIn(inputs.current[0].value, inputs.current[1].value);
+      //   formRef.current.reset();
       setValidation("");
       toggleModals("close");
-
       navigate("/private/private-home");
     } catch (err) {
       console.dir(err);
-      if (err.code === "auth/invalid-email") {
-        setValidation("Email format invalid");
-      }
-
-      if (err.code === "auth/email-already-use") {
-        setValidation("Email already used");
-      }
+      setValidation("Oops, the email and/or password is incorrect");
     }
   };
 
@@ -59,7 +41,7 @@ export default function SignUpModal() {
 
   return (
     <>
-      {modalState.signUpModal && (
+      {modalState.signInModal && (
         <div className="position-fixed top-0 vw-100 vh-100 ">
           <div
             className="w-100 h-100 bg-dark bg-opacity-75 "
@@ -76,7 +58,7 @@ export default function SignUpModal() {
             <div className="modal-dialog bg-white">
               <div className="modal-content" style={{ padding: "10px" }}>
                 <div className="modal-header ">
-                  <h5 className="modal-title mb-3 ">Sign Up</h5>
+                  <h5 className="modal-title mb-3">Sign Up</h5>
                   <button
                     onClick={() => toggleModals("close")}
                     className="btn-close"
@@ -84,12 +66,12 @@ export default function SignUpModal() {
                 </div>
                 <div className="modal-body">
                   <form
-                    className="sign-up-from"
+                    className="sign-in-from"
                     onSubmit={handleForm}
                     ref={formRef}
                   >
                     <div className="mb-3">
-                      <label className="form-label" htmlFor="signUpEmail">
+                      <label className="form-label" htmlFor="signInEmail">
                         Email Adress
                       </label>
                       <input
@@ -98,12 +80,12 @@ export default function SignUpModal() {
                         required
                         type="email"
                         className="form-control"
-                        id="signUpEmail"
+                        id="signInEmail"
                       />
                     </div>
 
                     <div className="mb-3">
-                      <label className="form-label" htmlFor="repeatUpPwd">
+                      <label className="form-label" htmlFor="SignInPwd">
                         Password
                       </label>
                       <input
@@ -112,11 +94,11 @@ export default function SignUpModal() {
                         required
                         type="password"
                         className="form-control"
-                        id="signUpPwd"
+                        id="signInPwd"
                       />
                     </div>
                     <div className="mb-3">
-                      <label className="form-label" htmlFor="repeatPwd">
+                      {/* <label className="form-label" htmlFor="repeatPwd">
                         Repeat Password
                       </label>
                       <input
@@ -126,7 +108,7 @@ export default function SignUpModal() {
                         type="password"
                         className="form-control"
                         id="repeatPwd"
-                      />
+                      /> */}
                       <p className="text-danger mt-1">{validation}</p>
                     </div>
 

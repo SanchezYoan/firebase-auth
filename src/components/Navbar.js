@@ -8,17 +8,19 @@ import { auth } from "../firebase-config";
 const Navbar = () => {
   const { toggleModals } = useContext(UserContext);
 
-  const navigate = { useNavigate };
+  const navigate = useNavigate();
 
   const logOut = async () => {
     try {
       await signOut(auth);
+      navigate("/");
     } catch (err) {
       alert(
         `For some reasons we can't deconnect, please check your internet connexion and retry`
       );
     }
   };
+
   return (
     <nav className="navbar navbar-light bg-light px-4">
       <Link to="/" className="navbar-brand">

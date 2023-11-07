@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../firebase-config";
 
@@ -21,6 +22,19 @@ export function UserContextProvider(props) {
 
   const signUp = (email, pwd) => {
     createUserWithEmailAndPassword(auth, email, pwd)
+      .then((userCredential) => {
+        // Sign up
+        const user = userCredential.user;
+        console.log("SUCCESS" + user);
+      })
+      .catch((error) => {
+        console.log("ERROR CODE: " + error.code);
+        console.log("ERROR MESSAGE: " + error.message);
+      });
+  };
+
+  const signIn = (email, pwd) => {
+    signInWithEmailAndPassword(auth, email, pwd)
       .then((userCredential) => {
         // Sign up
         const user = userCredential.user;
@@ -61,7 +75,7 @@ export function UserContextProvider(props) {
 
   return (
     <UserContext.Provider
-      value={{ modalState, toggleModals, signUp, currentUser }}
+      value={{ modalState, toggleModals, signUp, signIn, currentUser }}
     >
       {!loadingData && props.children}
     </UserContext.Provider>
