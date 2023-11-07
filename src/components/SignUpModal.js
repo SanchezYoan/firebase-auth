@@ -1,10 +1,13 @@
 import React, { useContext, useRef, useState } from "react";
 import { UserContext } from "../context/userContext";
+import { useNavigate } from "react-router";
 
 export default function SignUpModal() {
   const { modalState, toggleModals, signUp } = useContext(UserContext);
 
   const [validation, setValidation] = useState("");
+
+  const navigate = useNavigate();
 
   const inputs = useRef([]);
 
@@ -35,9 +38,23 @@ export default function SignUpModal() {
       );
       formRef.current.reset();
       setValidation("");
+      toggleModals("close");
+      navigate("/private/private-home");
     } catch (err) {
-      console.log(err);
+      console.dir(err);
+      if (err.code === "auth/invalid-email") {
+        setValidation("Email format invalid");
+      }
+
+      if (err.code === "auth/email-already-use") {
+        setValidation("Email already used");
+      }
     }
+  };
+
+  const closeModal = () => {
+    setValidation("");
+    toggleModals("close");
   };
 
   return (
@@ -46,7 +63,9 @@ export default function SignUpModal() {
         <div className="position-fixed top-0 vw-100 vh-100 ">
           <div
             className="w-100 h-100 bg-dark bg-opacity-75 "
-            onClick={() => toggleModals("close")}
+            onClick={() => {
+              closeModal();
+            }}
           >
             {" "}
           </div>
